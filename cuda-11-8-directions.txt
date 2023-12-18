@@ -1,0 +1,40 @@
+# Download the CUDA keyring package
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb
+
+# Install the CUDA keyring package
+sudo dpkg -i cuda-keyring_1.0-1_all.deb
+
+# Update the package list
+sudo apt-get update
+
+# Install CUDA 11.8, usually installs the driver as well
+sudo apt-get -y install cuda-11-8
+
+Add CUDA to your environment variables
+echo 'export PATH=/usr/local/cuda-11.8/bin:$PATH' >> ~/.bashrc
+echo 'export LD_LIBRARY_PATH=/usr/local/cuda-11.8/lib64:$LD_LIBRARY_PATH' >> ~/.bashrc
+source ~/.bashrc
+
+Install cuDNN and other libraries
+export cudnn_version=8.6.0.*
+export cuda_version=cuda11.8
+sudo apt-get install libcudnn8=${cudnn_version}-1+${cuda_version}
+sudo apt-get install libcudnn8-dev=${cudnn_version}-1+${cuda_version}
+
+# Download Python
+wget https://www.python.org/ftp/python/3.9.2/Python-3.9.2.tgz
+
+# Untar the archive
+tar -xf Python-3.9.2.tgz
+
+# Change directory
+cd Python-3.9.2
+
+# Enable optimizations for this python install
+./configure --enable-optimizations
+
+# Make with total threads on machine
+make -j $(nproc)
+
+# Install this python as an alternative to not interfere with current python installation
+sudo make altinstall
